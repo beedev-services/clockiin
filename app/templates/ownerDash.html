@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/logo.jpg' %}" />
+    <title></title>
+</head>
+<body>
+    <header>
+        {% block header %}
+            {% include 'base/loggedHeader.html'   %}
+        {% endblock %}
+    </header>
+    <div>
+        {% if messages %}
+        <section class='messages'>
+            {% for message in messages %}
+            <h3 {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h3>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </div>
+    <main>
+        <h1>OwnerDash</h1>
+    </main>
+    <footer>
+        {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

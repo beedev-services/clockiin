@@ -1,0 +1,12 @@
+body header {
+  display: flex;
+}
+body main {
+  display: flex;
+}
+body main #regcode {
+  display: none;
+}
+body footer {
+  display: flex;
+}
