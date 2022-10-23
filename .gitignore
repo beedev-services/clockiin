@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.sql
 key.py
+regcodes.py
 
 # C extensions
 *.so
