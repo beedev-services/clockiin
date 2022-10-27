@@ -31,9 +31,10 @@ class UserManager(models.Manager):
         if form['password'] != form['confirm']:
             errors['password'] = 'Passwords do not match'
         # Role Checks
-        if form['role'] == 'manager':
+        if form['rowl'] == 'owner':
             if form['regcode'] not in regcodes:
                 errors['regcode'] = 'Invalid Registration Code'
+        if form['role'] == 'manager':
             if form['email'] not in managers:
                 errors['email'] = 'Please check with you employer'
             else:

@@ -1,14 +1,117 @@
+@import './base.less';
+
+
+
 body {
+    .flexcolumn();
+    .kalam();
+    background-color: @bg;
+    color: @font;
+
     header {
-        display: flex;
+        .flexcolumn();
+        width: 95%;
+        border: 3px groove @border;
+
+        h1 {
+            font-size: 2.2em;
+        }
+        
+        nav {
+            .flexrow();
+            .patrickHand();
+            width: 85%;
+            justify-content: space-evenly;
+            font-size: 1.5em;
+
+            a {
+                color: @clock;
+                .vt323();
+                text-decoration: none;
+            }
+        }
     }
     main {
-        display: flex;
-        #regcode {
-            display: none;
+        .flexcolumn();
+        border: 3px groove @border;
+        width: 95%;
+        min-height: 400px;
+
+        .row {
+            .flexrow();
+            width: 85%;
+            justify-content: space-evenly;
+
+            #reg {
+                display: none;
+
+                #regcode {
+                    display: none;
+                }
+            }
+            form {
+                .flexcolumn();
+
+                section {
+                    .flexcolumn();
+                    margin: .2em;
+                }
+                button {
+                    margin-top: .4em;
+                }
+            }
+        }
+    }
+    .protected {
+        .flexrow();
+        width: 95%;
+        justify-content: space-around;
+        align-items: stretch;
+
+        .sidenav {
+            .flexcolumn();
+            // border: 3px groove @border;
+            width: 30%;
+
+            .navSideNav {
+                .flexcolumn();
+                .patrickHand();
+
+                a {
+                    color: @clock;
+                    .vt323();
+                    text-decoration: none;
+                }
+            }
+        }
+        .column {
+            .flexcolumn();
+            // border: 3px groove @border;
+            width: 60%;
         }
     }
     footer {
-        display: flex;
+        .flexcolumn();
+        width: 95%;
+        border: 3px groove @border;
+
+        .row {
+            .flexrow();
+            width: 85%;
+
+            .row {
+                .flexrow();
+                width: 30%;
+                justify-content: space-evenly;
+
+                img {
+                    max-width: 50px;
+                    border-radius: 50%;
+                }
+            }
+            .column {
+                .flexcolumn();
+            }
+        }
     }
 }

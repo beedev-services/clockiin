@@ -95,6 +95,8 @@ def dashboard(request):
         companies = Company.objects.all().values()
         employees = Employee.objects.all().values()
         managers = Management.objects.all().values()
+        # Checking user level
+        # Super Admin == 24
         if user.level == 24:
             context = {
                 'user': user,
@@ -102,17 +104,23 @@ def dashboard(request):
                 'employees': employees,
                 'managers': managers
             }
+            messages.error(request, f"Welcome Admin User {user.firstName}")
             return render(request, 'adminDash.html', context)
+        # Owner == 2
         if user.level == 2:
+            # Checking if owner has a Manager profile attached 0 = No
             if user.theData == 0:
+                # Looking in the managers list to find a match
                 for m in managers:
                     if user.email == m.email:
                         toUpdate=User.objects.get(id=user.id)
                         toUpdate.theData=m.id
+                        # Now looking for a company match based of the manager list
                         for c in companies:
                             if m.theCo == c.id:
                                 toUpdate.workFor=c.id
                                 toUpdate.save()
+                # Company and manager are filtered to only allow the users company and managers list to show based of user.workFor and user.theData
                 company = Company.objects.filter(id=user.workFor)
                 manager = Management.objects.filter(id=user.theData)
                 context = {
@@ -120,15 +128,19 @@ def dashboard(request):
                     'manager': manager,
                     'company': company
                 }
-                return render(request, 'ownerDash.html', context)
+                messages.error(request, f"Welcome {user.firstName}")
+                return render(request, 'owner/ownerDash.html', context)
+            # Assumes that the user is a return user and has data attached already
             company = Company.objects.filter(id=user.workFor)
             manager = Management.objects.filter(id=user.theData)
             context = {
                 'user': user,
                 'manager': manager,
                 'company': company
-                }
+            }
+            messages.error(request, f'Welcome {user.firstName}')
             return render(request, 'ownerDash.html')
+        # Hr == 1
         if user.level == 1:
             if user.theData == 0:
                 for m in managers:
@@ -146,6 +158,7 @@ def dashboard(request):
                     'manager': manager,
                     'company': company
                 }
+                messages.error(request, f'Welcome {user.firstName}')
                 return render(request, 'hrDash.html', context)
             company = Company.objects.filter(id=user.workFor)
             manager = Management.objects.filter(id=user.theData)
@@ -154,7 +167,9 @@ def dashboard(request):
                 'manager': manager,
                 'company': company
                 }
+
             return render(request, 'hrDash.html', context)
+        # General Member
         else:
             if user.theData == 0:
                 for e in employees:
