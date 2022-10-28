@@ -11,6 +11,7 @@
 </head>
 <body>
     <header>
+        <h1>Hive-Time Admin Dashboard</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -24,8 +25,34 @@
         </section>
         {% endif %}
     </div>
-    <main>
-        <h1>Admin Dash</h1>
+    <main class="protected">
+        <div class="sidenav">
+            {% block adminSideNav %}
+                {% include 'admin/sideNav.html'   %}
+            {% endblock %}
+        </div>
+        <div class="column">
+            <table>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Owner</th>
+                    <th></th>
+                </tr>
+                {% for co in companies %}
+                    <tr>
+                        <td>{{co.name}}</td>
+                        <td>
+                            {% for u in users %}
+                                {% if u.id == co.owner_id %}
+                                    {{u.firstName}} {{u.lastName}}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </main>
     <footer>
         {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}

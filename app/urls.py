@@ -9,4 +9,13 @@ urlpatterns = [
     path('reg/', views.reg),
     path('logout/', views.logout),
     path('dashboard/', views.dashboard),
+
+    # Admin Routes
+    path('theAdmin/codes/', views.allCodes),
+    path('theAdmin/generateCode/', views.generateCode),
+    path('theAdmin/companies/', views.allCompanies),
+
+    # Management Routes
+    path('company/add/', views.addCompany),
+    path('company/create/', views.createCompany),
 ]

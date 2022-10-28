@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/logo.jpg' %}" />
+    <title>Hive-Time</title>
+</head>
+<body>
+    <header>
+        <h1>Hive-Time Admin Dashboard</h1>
+        {% block header %}
+            {% include 'base/loggedHeader.html'   %}
+        {% endblock %}
+    </header>
+    <div>
+        {% if messages %}
+        <section class='messages'>
+            {% for message in messages %}
+            <h3 {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h3>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </div>
+    <main class="protected">
+        <div class="sidenav">
+            {% block adminSideNav %}
+                {% include 'admin/sideNav.html'   %}
+            {% endblock %}
+        </div>
+        <div class="column">
+            <table>
+                <tr>
+                    <th colspan="3">Registration Codes</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Creator</th>
+                    <th>Company</th>
+                </tr>
+                {% for code in codes %}
+                    <tr>
+                        <td>{{code.id}}</td>
+                        <td>{{code.userCode}}</td>
+                        <td> 
+                            {% for u in users %}
+                                {% if u.id == code.creator_id %}
+                                    {{u.firstName}} {{u.lastName}}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for c in companies %}
+                                {% for c.owner_id in code.creator_id %}
+                                    {{c.name}}
+                                {% endfor %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </main>
+    <footer>
+        {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

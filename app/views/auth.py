@@ -11,22 +11,16 @@ def index(request):
     return render(request, 'index.html')
 
 def logReg(request):
-    if 'user_id'  not in request.session:
+    if 'user_id' not in request.session:
         return render(request, 'logReg.html')
     else:
-        user = User.objects.get(id=request.session['user_id'])
-        logs = Log.objects.all().order_by('-updatedAt')
-        context = {
-            'user': user,
-            'logs': logs,
-        }
-        return render(request, 'index.html', context)
+        return redirect('/dashboard/')
 
 # ############ Log/Reg Functions
 
 def logout(request):
     request.session.clear()
-    messages.error(request, 'You have been logged out')
+    messages.info(request, 'You have been logged out')
     return redirect('/')
 
 def login(request):
@@ -62,26 +56,36 @@ def reg(request):
         toUpdate = User.objects.get(id=request.session['user_id'])
         toUpdate.level=24
         toUpdate.save()
-        messages.error(request, "Welcome Admin Member")
+        messages.success(request, "Welcome Admin Member")
         return redirect('/dashboard/')
     if request.POST['regcode'] == SUPERADMINKEY:
         toUpdate = User.objects.get(id=request.session['user_id'])
         toUpdate.level=24
         toUpdate.save()
-        messages.error(request, "Welcome Admin User")
+        messages.success(request, "Welcome Admin User")
         return redirect('/dashboard/')
-    if request.POST['regcode'] == OWNERKEY:
-        toUpdate = User.objects.get(id=request.session['user_id'])
-        toUpdate.level=2
-        toUpdate.save()
-        messages.error(request, "Welcome Owner")
-        return redirect('/dashboard/')
-    if request.POST['regcode'] == HRKEY:
-        toUpdate = User.objects.get(id=request.session['user_id'])
-        toUpdate.level=1
-        toUpdate.save()
-        messages.error(request, "Welcome HR")
-        return redirect('/dashboard/')
+    codes = UserCodes.objects.all().values()
+    for code in codes:
+        if request.POST['role'] == 'owner':
+            if request.POST['regcode'] == code['userCode']:
+                toUpdate = User.objects.get(id=request.session['user_id'])
+                toUpdate.level=2
+                toUpdate.save()
+                messages.success(request, "Welcome Owner")
+                codeUsed = UserCodes.objects.get(id=code['id'])
+                codeUsed.lastUsed = datetime.datetime.now()
+                codeUsed.save()
+                return redirect('/dashboard/')
+        if request.POST['role'] == 'manager':
+            if request.POST['regcode'] == code['userCode']:
+                toUpdate = User.objects.get(id=request.session['user_id'])
+                toUpdate.level=1
+                toUpdate.save()
+                messages.success(request, "Welcome HR")
+                codeUsed = UserCodes.objects.get(id=code['id'])
+                codeUsed.lastUsed = datetime.datetime.now()
+                codeUsed.save()
+                return redirect('/dashboard/')
     else:
         return redirect('/dashboard/')
 
@@ -104,8 +108,8 @@ def dashboard(request):
                 'employees': employees,
                 'managers': managers
             }
-            messages.error(request, f"Welcome Admin User {user.firstName}")
-            return render(request, 'adminDash.html', context)
+            messages.success(request, f"Welcome Admin User {user.firstName}")
+            return render(request, 'admin/adminDash.html', context)
         # Owner == 2
         if user.level == 2:
             # Checking if owner has a Manager profile attached 0 = No
@@ -128,7 +132,7 @@ def dashboard(request):
                     'manager': manager,
                     'company': company
                 }
-                messages.error(request, f"Welcome {user.firstName}")
+                messages.success(request, f"Welcome Owner {user.firstName}")
                 return render(request, 'owner/ownerDash.html', context)
             # Assumes that the user is a return user and has data attached already
             company = Company.objects.filter(id=user.workFor)
@@ -138,7 +142,7 @@ def dashboard(request):
                 'manager': manager,
                 'company': company
             }
-            messages.error(request, f'Welcome {user.firstName}')
+            messages.success(request, f'Welcome {user.firstName}')
             return render(request, 'ownerDash.html')
         # Hr == 1
         if user.level == 1:
@@ -158,7 +162,7 @@ def dashboard(request):
                     'manager': manager,
                     'company': company
                 }
-                messages.error(request, f'Welcome {user.firstName}')
+                messages.success(request, f'Welcome {user.firstName}')
                 return render(request, 'hrDash.html', context)
             company = Company.objects.filter(id=user.workFor)
             manager = Management.objects.filter(id=user.theData)

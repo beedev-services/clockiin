@@ -18,12 +18,15 @@ class UserManager(models.Manager):
         employees = []
         employeeList = Employee.objects.all().values()
         for e in employeeList:
-            employees.append(e.email)
-        # Creating list of manager emails
-        managers = []
-        managerList = Management.objects.all().values()
-        for m in managerList:
-            managers.append(m.email)
+            employees.append(e['email'])
+        # Pulling Created Reg Codes
+        codes = []
+        codeList = UserCodes.objects.all().values()
+        print('the code list', codeList)
+        for c in codeList:
+            # print('one row in codelist', c)
+            codes.append(c['userCode'])
+            # print('one code', c['userCode'], 'the id', c['id'])
         # Check non duplicate emails
         if emailCheck:
             errors['email'] = 'Email is already registered'
@@ -31,19 +34,17 @@ class UserManager(models.Manager):
         if form['password'] != form['confirm']:
             errors['password'] = 'Passwords do not match'
         # Role Checks
-        if form['rowl'] == 'owner':
+        if form['role'] == 'sysAdmin':
             if form['regcode'] not in regcodes:
                 errors['regcode'] = 'Invalid Registration Code'
         if form['role'] == 'manager':
-            if form['email'] not in managers:
-                errors['email'] = 'Please check with you employer'
-            else:
-                errors['email'] = 'Please chose another selection'
+            if form['regcode'] not in codes:
+                errors['regcode'] = 'Invalid Registration code'
         if form['role'] == 'employee':
             if form['email'] not in employees:
                 errors['email'] = 'Please check with your employer'
-        if form['role'] == 'sysAdmin':
-            if form['regcode'] not in regcodes:
+        if form['role'] == 'owner':
+            if form['regcode'] not in codes:
                 errors['regcode'] = 'Invalid Registration code'
         return errors
 
@@ -68,6 +69,13 @@ class User(models.Model):
     updatedAt = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
+
+class UserCodes(models.Model):
+    userCode = models.CharField(max_length=255)
+    lastUsed = models.DateTimeField(auto_now=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, related_name='codeCreator', on_delete=CASCADE)
+
 
 class UserAddress(models.Model):
     address1 = models.CharField(max_length=255)
@@ -104,6 +112,8 @@ class Employee(models.Model):
     hireDate = models.DateField()
     promotionDate = models.DateField(blank=True)
     lastPromotion = models.DateField(blank=True)
+    terminationDate = models.DateField(blank=True)
+    terminated = models.BooleanField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
     theCompany = models.ForeignKey(Company, related_name='workingFor', on_delete=CASCADE)
@@ -117,6 +127,8 @@ class Management(models.Model):
     hireDate = models.DateField()
     promotionDate = models.DateField(blank=True)
     lastPromotion = models.DateField(blank=True)
+    terminationDate = models.DateField(blank=True)
+    terminated = models.BooleanField(default=0)
     title = models.CharField(max_length=255)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)

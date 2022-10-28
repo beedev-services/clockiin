@@ -31,12 +31,34 @@
             {% endblock %}
         </div>
         <div class="column">
-            <h1>{{company.name}}</h1>
-            <address>
-                {{company.address1}}<br>
-                {{company.address2}}<br>
-                {{company.city}}, {{company.state}} {{company.zipCode}}
-            </address>
+            <form action="/company/create/" method="post">
+                {% csrf_token %}
+                <section>
+                    <label for="name">Company Name</label>
+                    <input type="text" name="name">
+                </section>
+                <section>
+                    <label for="address1">Address Line 1</label>
+                    <input type="text" name="address1">
+                </section>
+                <section>
+                    <label for="address2">Address Line 2</label>
+                    <input type="text" name="address2">
+                </section>
+                <section>
+                    <label for="city">City</label>
+                    <input type="text" name="city">
+                </section>
+                <section>
+                    <label for="state">State</label>
+                    <input type="text" name="state">
+                </section>
+                <section>
+                    <label for="zipCode">ZipCode</label>
+                    <input type="text" name="zipCode">
+                </section>
+                <button>Add Company</button>
+            </form>
         </div>
     </main>
     <footer>

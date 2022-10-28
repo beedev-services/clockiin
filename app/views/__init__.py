@@ -1,5 +1,4 @@
 from .auth import *
-from .owner import *
+from .company import *
 from .employee import *
-from .management import *
 from .admin import *
