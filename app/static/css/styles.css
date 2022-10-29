@@ -176,11 +176,14 @@ body .protected .sidenav .navSideNav {
   justify-content: center;
   align-items: center;
   font-family: 'Patrick Hand', cursive;
+  align-items: flex-start;
 }
 body .protected .sidenav .navSideNav a {
   color: #7895B2;
   font-family: 'VT323', monospace;
   text-decoration: none;
+  font-size: 1.2em;
+  padding: 0.5em;
 }
 body .protected .column {
   display: flex;
@@ -188,6 +191,9 @@ body .protected .column {
   justify-content: center;
   align-items: center;
   width: 60%;
+}
+body .protected .column address {
+  font-size: 1.2em;
 }
 body footer {
   display: flex;

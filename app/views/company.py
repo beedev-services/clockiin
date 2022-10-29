@@ -41,6 +41,55 @@ def payRates(request):
         messages.success(request, f'{user.firstName}')
         return render(request, 'owner/payRate.html', context)
 
+def managers(request):
+    if 'user_id' not in request.session:
+        messages.error(request, 'Please log in to view page')
+    user = User.objects.get(id=request.session['user_id'])
+    if user.level == 0:
+        messages.error(request, 'You are not authorized to view this page')
+        return redirect('/')
+    else:
+        company = Company.objects.get(owner_id=request.session['user_id'])
+        departments = Department.objects.filter(company_id=company.id)
+        payRates = PayRate.objects.filter(co_id=company.id)
+        managers = Management.objects.filter(theCo_id=company.id)
+        users = User.objects.filter(workFor=company.id)
+        context = {
+            'user': user,
+            'company': company,
+            'departments': departments,
+            'payRates': payRates,
+            'managers': managers,
+            'users': users,
+        }
+        messages.success(request, f'{user.firstName}')
+        return render(request, 'owner/managers.html', context)
+
+def employees(request):
+    if 'user_id' not in request.session:
+        messages.error(request, 'Please log in to view page')
+    user = User.objects.get(id=request.session['user_id'])
+    if user.level == 0:
+        messages.error(request, 'You are not authorized to view this page')
+        return redirect('/')
+    else:
+        company = Company.objects.get(owner_id=request.session['user_id'])
+        departments = Department.objects.filter(company_id=company.id)
+        payRates = PayRate.objects.filter(co_id=company.id)
+        employees = Employee.objects.filter(theCompany_id=company.id)
+        users = User.objects.filter(theData=company.id)
+        context = {
+            'user': user,
+            'company': company,
+            'departments': departments,
+            'payRates': payRates,
+            'employees': employees,
+            'users': users,
+        }
+        print(employees)
+        messages.success(request, f'{user.firstName}')
+        return render(request, 'owner/employees.html', context)
+
 def addCompany(request):
     if 'user_id' not in request.session:
         messages.error(request, 'Please log in to view page')
@@ -94,7 +143,7 @@ def addManager(request):
     user = User.objects.get(id=request.session['user_id'])
     payRates = PayRate.objects.all().values()
     departments = Department.objects.all().values()
-    company = Company.objects.filter(theCo_id=request.session['user_id'])
+    company = Company.objects.get(owner_id=request.session['user_id'])
     if user.level == 2:
         context = {
             'user': user,
@@ -102,6 +151,7 @@ def addManager(request):
             'departments': departments,
             'company': company,
         }
+        print(company)
         messages.success(request, f'{user.firstName}')
         return render(request, 'owner/addManager.html', context)
     if user.level == 1:
@@ -123,7 +173,7 @@ def addEmployee(request):
     user = User.objects.get(id=request.session['user_id'])
     payRates = PayRate.objects.all().values()
     departments = Department.objects.all().values()
-    company = Company.objects.filter(theCompany_id=request.session['user_id'])
+    company = Company.objects.get(owner_id=request.session['user_id'])
     if user.level == 2:
         context = {
             'user': user,
@@ -131,6 +181,7 @@ def addEmployee(request):
             'departments': departments,
             'company': company,
         }
+        print(company)
         messages.success(request, f'{user.firstName}')
         return render(request, 'owner/addEmployee.html', context)
     if user.level == 1:
@@ -206,18 +257,29 @@ def createManager(request):
         lastName=request.POST['lastName'],
         email=request.POST['email'],
         hireDate=request.POST['hireDate'],
-        promotionDate=request.POST['promotionDate'],
-        lastPromotion=request.POST['lastPromotion'],
-        terminationDate='',
         terminated=0,
         title=request.POST['title'],
         pay_id=request.POST['pay'],
         dept_id=request.POST['dept'],
         theCo_id=request.POST['theCo']
     )
+    messages.success(request, 'Manager Added')
+    return redirect('/company/managers/')
 
 def createEmployee(request):
-    pass
+    Employee.objects.create(
+        firstName=request.POST['firstName'],
+        lastName=request.POST['lastName'],
+        email=request.POST['email'],
+        hireDate=request.POST['hireDate'],
+        terminated=0,
+        title=request.POST['title'],
+        payRate_id=request.POST['payRate'],
+        department_id=request.POST['department'],
+        theCompany_id=request.POST['theCompany']
+    )
+    messages.success(request, 'Employee Added')
+    return redirect('/company/employees/')
 
 # Company View Pages
 

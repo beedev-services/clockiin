@@ -55,9 +55,19 @@ def allUsers(request):
         return redirect('/dashboard/')
     else:
         users = User.objects.all().values()
+        mUsers = User.objects.filter(level=1)
+        eUsers = User.objects.filter(level=0)
+        managers = Management.objects.all().values()
+        employees = Employee.objects.all().values()
+        companies = Company.objects.all().values()
         context = {
             'user': user,
             'users': users,
+            'managers': managers,
+            'companies': companies,
+            'employees': employees,
+            'mUsers': mUsers,
+            'eUsers': eUsers,
         }
         messages.success(request, f'{user.firstName}')
         return render(request, 'admin/users.html', context)

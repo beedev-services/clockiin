@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Admin Dashboard</h1>
+        <h1>Hive-Time All Users</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -31,7 +31,134 @@
                 {% include 'admin/sideNav.html'   %}
             {% endblock %}
         </div>
-        <div class="column"></div>
+        <div class="column">
+            <table>
+                <tr>
+                    <th colspan="4">Admin Users</th>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Logged In</th>
+                </tr>
+                {% for u in users %}
+                    {% if u.level == 24 %}
+                        <tr>
+                            <td>
+                                {% if u.workFor == 0 %}
+                                    Super Admin
+                                {% else %}
+                                    {% for c in companies %}
+                                        {% if u.workFor_id == c.id %}
+                                            {{c.name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{u.firstName}} {{u.lastName}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.loggedOn}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <table>
+                <tr>
+                    <th colspan="4">Owners</th>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Logged In</th>
+                </tr>
+                {% for u in users %}
+                    {% if u.level == 2 %}
+                        <tr>
+                            <td>
+                                {% if u.workFor == 0 %}
+                                    
+                                {% else %}
+                                    {% for c in companies %}
+                                        {% if u.workFor == c.id %}
+                                            {{c.name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{u.firstName}} {{u.lastName}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.loggedOn}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <table>
+                <tr>
+                    <th colspan="4">Managers</th>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Last Logged In</th>
+                </tr>
+                {% for m in managers %}
+                    {% if m.title != 'Owner' %}
+                        <tr>
+                            <td>
+                                {% for c in companies %}
+                                    {% if m.theCo_id == c.id %}
+                                        {{c.name}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>{{m.title}}</td>
+                            <td>{{m.firstName}} {{m.lastName}}</td>
+                            <td>
+                                {% for u in mUsers %}
+                                    {% if m.email == u.email %}
+                                        {{u.loggedOn}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <table>
+                <tr>
+                    <th colspan="4">Employees</th>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Logged In</th>
+                </tr>
+                {% for e in employees %}
+                    <tr>
+                        <td>
+                            {% for c in companies %}
+                                {% if e.theCompany_id == c.id %}
+                                    {{c.name}}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{e.title}}</td>
+                        <td>{{e.firstName}} {{e.lastName}}</td>
+                        <td>
+                            {% for u in eUsers %}
+                                {% if e.email == u.email %}
+                                    {{u.loggedOn}}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </main>
     <footer>
         {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}

@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Admin Dashboard</h1>
+        <h1>Hive-Time All Codes</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -32,6 +32,7 @@
             {% endblock %}
         </div>
         <div class="column">
+            <h2><a href="/theAdmin/generateCode/">Generate New Code</a></h2>
             <table>
                 <tr>
                     <th colspan="3">Registration Codes</th>
@@ -55,9 +56,11 @@
                         </td>
                         <td>
                             {% for c in companies %}
-                                {% for c.owner_id in code.creator_id %}
+                                {% if c.owner_id == code.creator_id %}
                                     {{c.name}}
-                                {% endfor %}
+                                {% else %}
+                                    Master Code
+                                {% endif %}
                             {% endfor %}
                         </td>
                     </tr>

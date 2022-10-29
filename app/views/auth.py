@@ -8,7 +8,9 @@ import datetime
 # ############ Render pages
 
 def index(request):
-    return render(request, 'index.html')
+    if 'user_id' not in request.session:
+        return render(request, 'index.html')
+    return render(request, 'altIndex.html')
 
 def logReg(request):
     if 'user_id' not in request.session:
@@ -116,16 +118,16 @@ def dashboard(request):
             if user.theData == 0:
                 # Looking in the managers list to find a match
                 for m in managers:
-                    if user.email == m.email:
+                    if user.email == m['email']:
                         toUpdate=User.objects.get(id=user.id)
-                        toUpdate.theData=m.id
+                        toUpdate.theData=m['id']
                         # Now looking for a company match based of the manager list
                         for c in companies:
-                            if m.theCo == c.id:
-                                toUpdate.workFor=c.id
+                            if m['theCo_id'] == c['id']:
+                                toUpdate.workFor=c['id']
                                 toUpdate.save()
                 # Company and manager are filtered to only allow the users company and managers list to show based of user.workFor and user.theData
-                company = Company.objects.filter(id=user.workFor)
+                company = Company.objects.get(id=user.workFor)
                 manager = Management.objects.filter(id=user.theData)
                 context = {
                     'user': user,
@@ -135,7 +137,7 @@ def dashboard(request):
                 messages.success(request, f"Welcome Owner {user.firstName}")
                 return render(request, 'owner/ownerDash.html', context)
             # Assumes that the user is a return user and has data attached already
-            company = Company.objects.filter(id=user.workFor)
+            company = Company.objects.get(id=user.workFor)
             manager = Management.objects.filter(id=user.theData)
             context = {
                 'user': user,
@@ -143,7 +145,7 @@ def dashboard(request):
                 'company': company
             }
             messages.success(request, f'Welcome {user.firstName}')
-            return render(request, 'ownerDash.html')
+            return render(request, 'owner/ownerDash.html', context)
         # Hr == 1
         if user.level == 1:
             if user.theData == 0:

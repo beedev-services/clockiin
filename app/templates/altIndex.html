@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Owner Dashboard</h1>
+        <h1>Hive-Time</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -25,20 +25,7 @@
         </section>
         {% endif %}
     </div>
-    <main class="protected">
-        <div class="sidenav">
-            {% block ownerSideNav %}
-                {% include 'owner/sideNav.html'   %}
-            {% endblock %}
-        </div>
-        <div class="column">
-            <h2>{{company.name}}</h2>
-            <address>
-                {{company.address1}}<br>
-                {{company.address2}}<br>
-                {{company.city}}, {{company.state}} {{company.zipCode}}
-            </address>
-        </div>
+    <main>
     </main>
     <footer>
         {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}
