@@ -11,7 +11,6 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Admin Dashboard</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -27,12 +26,29 @@
     </div>
     <main class="protected">
         <div class="sidenav">
-            {% block adminSideNav %}
-                {% include 'admin/sideNav.html'   %}
+            {% block ownerSideNav %}
+                {% include 'owner/sideNav.html'   %}
             {% endblock %}
         </div>
         <div class="column">
-            
+            <h3><a href="/company/payRate/add/">Add Pay Rates</a></h3>
+            <table>
+                <tr>
+                    <th colspan="3">Pay Rate</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Tier</th>
+                    <th>Pay Rate</th>
+                </tr>
+                {% for pay in rates %}
+                    <tr>
+                        <td>{{pay.id}}</td>
+                        <td>{{pay.level}}</td>
+                        <td>{{pay.rate}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </main>
     <footer>

@@ -11,7 +11,6 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Admin Dashboard</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -27,12 +26,24 @@
     </div>
     <main class="protected">
         <div class="sidenav">
-            {% block adminSideNav %}
-                {% include 'admin/sideNav.html'   %}
+            {% block ownerSideNav %}
+                {% include 'owner/sideNav.html'   %}
             {% endblock %}
         </div>
         <div class="column">
-            
+            <form action="/company/payRate/create/" method="post">
+                {% csrf_token %}
+                <section>
+                    <label for="level">Tier</label>
+                    <input type="text" name="level">
+                </section>
+                <section>
+                    <label for="rate">Rate</label>
+                    <input type="text" name="rate">
+                    <input type="hidden" name="co" value="{{company.id}}">
+                </section>
+                <button>Add Pay Rate</button>
+            </form>
         </div>
     </main>
     <footer>

@@ -18,4 +18,12 @@ urlpatterns = [
     # Management Routes
     path('company/add/', views.addCompany),
     path('company/create/', views.createCompany),
+    path('company/codes/', views.companyCodes),
+    path('company/generateCode/', views.generateCode),
+    path('company/departments/', views.departments),
+    path('company/department/add/', views.addDepartment),
+    path('company/department/create/', views.createDepartment),
+    path('company/payRates/', views.payRates),
+    path('company/payRate/add/', views.addPayRate),
+    path('company/payRate/create/', views.createPayRate),
 ]

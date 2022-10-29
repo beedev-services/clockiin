@@ -24,8 +24,15 @@
         </section>
         {% endif %}
     </div>
-    <main>
-        <h1>HR Dash</h1>
+    <main class="protected">
+        <div class="sidenav">
+            {% block employeeSideNav %}
+                {% include 'employee/sideNav.html'   %}
+            {% endblock %}
+        </div>
+        <div class="column">
+
+        </div>
     </main>
     <footer>
         {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}

@@ -5,6 +5,42 @@ import datetime
 
 # Company Render pages
 
+def departments(request):
+    if 'user_id' not in request.session:
+        messages.error(request, 'Please log in to view page')
+    user = User.objects.get(id=request.session['user_id'])
+    if user.level == 0:
+        messages.error(request, 'You are not authorized to view this page')
+        return redirect('/')
+    else:
+        company = Company.objects.get(owner_id=request.session['user_id'])
+        departments = Department.objects.filter(company_id=company.id)
+        context = {
+            'user': user,
+            'company': company,
+            'departments': departments,
+        }
+        messages.success(request, f'{user.firstName}')
+        return render(request, 'owner/departments.html', context)
+
+def payRates(request):
+    if 'user_id' not in request.session:
+        messages.error(request, 'Please log in to view page')
+    user = User.objects.get(id=request.session['user_id'])
+    if user.level == 0:
+        messages.error(request, 'You are not authorized to view this page')
+        return redirect('/')
+    else:
+        company = Company.objects.get(owner_id=request.session['user_id'])
+        rates = PayRate.objects.filter(co_id=company.id)
+        context = {
+            'user': user,
+            'company': company,
+            'rates': rates,
+        }
+        messages.success(request, f'{user.firstName}')
+        return render(request, 'owner/payRate.html', context)
+
 def addCompany(request):
     if 'user_id' not in request.session:
         messages.error(request, 'Please log in to view page')
@@ -27,11 +63,12 @@ def addDepartment(request):
         messages.error(request, 'You are not authorized to view this page')
         return redirect('/')
     else:
-        company = Company.objects.filter(owner_id=request.session['user_id'])
+        company = Company.objects.get(owner_id=request.session['user_id'])
         context = {
             'user': user,
             'company': company,
         }
+        print(company)
         messages.success(request, f'{user.firstName}')
         return render(request, 'owner/addDept.html', context)
 
@@ -43,10 +80,10 @@ def addPayRate(request):
         messages.error(request, 'You are not authorized to view this page')
         return redirect('/')
     else:
-        pay = PayRate.objects.filter(co_id=request.session['user_id'])
+        company = Company.objects.get(owner_id=request.session['user_id'])
         context = {
             'user': user,
-            'pay': pay,
+            'company': company,
         }
         messages.success(request, f'{user.firstName}')
         return render(request, 'owner/addPay.html', context)
@@ -110,6 +147,27 @@ def addEmployee(request):
         messages.error(request, 'You are not authorized to view this page')
         return redirect('/')
 
+def companyCodes(request):
+    if 'user_id' not in request.session:
+        messages.error(request, "Please login")
+        return redirect('/')
+    user = User.objects.get(id=request.session['user_id'])
+    if user.level == 0:
+        messages.error(request, 'You are not authorized to view this page')
+        return redirect('/dashboard/')
+    else:
+        codes = UserCodes.objects.filter(creator_id=request.session['user_id'])
+        company = Company.objects.get(owner_id=request.session['user_id'])
+        users = User.objects.all().values()
+        context = {
+            'user': user,
+            'codes': codes,
+            'users': users,
+            'company': company,
+        }
+        messages.success(request, f'{user.firstName}')
+        return render(request, 'owner/codes.html', context)
+
 # Company Create Pages
 
 def createCompany(request):
@@ -130,12 +188,17 @@ def createDepartment(request):
         name=request.POST['name'],
         company_id=request.POST['company']
     )
+    messages.success(request, 'Department Created')
+    return redirect('/company/departments/')
 
 def createPayRate(request):
     PayRate.objects.create(
         rate=request.POST['rate'],
+        level=request.POST['level'],
         co_id=request.POST['co']
     )
+    messages.success(request, 'Pay Rate Created')
+    return redirect('/company/payRates/')
 
 def createManager(request):
     Management.objects.create(

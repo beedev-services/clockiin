@@ -100,6 +100,7 @@ class Department(models.Model):
 
 class PayRate(models.Model):
     rate = models.CharField(max_length=255)
+    level = models.CharField(max_length=255)
     co = models.ForeignKey(Company,related_name='companyPay', on_delete=CASCADE)
 
 class Employee(models.Model):

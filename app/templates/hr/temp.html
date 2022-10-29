@@ -11,7 +11,6 @@
 </head>
 <body>
     <header>
-        <h1>Hive-Time Admin Dashboard</h1>
         {% block header %}
             {% include 'base/loggedHeader.html'   %}
         {% endblock %}
@@ -27,12 +26,12 @@
     </div>
     <main class="protected">
         <div class="sidenav">
-            {% block adminSideNav %}
-                {% include 'admin/sideNav.html'   %}
+            {% block ownerSideNav %}
+                {% include 'hr/sideNav.html'   %}
             {% endblock %}
         </div>
         <div class="column">
-            
+
         </div>
     </main>
     <footer>

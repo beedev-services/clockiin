@@ -72,5 +72,8 @@ def generateCode(request):
         userCode=code,
         creator=user
     )
-    messages.error(request, f'{code} Generated')
-    return redirect('/theAdmin/codes/')
+    messages.success(request, f'{code} Generated')
+    if user.level == 24:
+        return redirect('/theAdmin/codes/')
+    if user.level == 2:
+        return redirect('/company/codes/')
