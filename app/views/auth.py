@@ -150,12 +150,12 @@ def dashboard(request):
         if user.level == 1:
             if user.theData == 0:
                 for m in managers:
-                    if user.email == m.email:
+                    if user.email == m['email']:
                         toUpdate=User.objects.get(id=user.id)
-                        toUpdate.theData=m.id
+                        toUpdate.theData=m['id']
                         for c in companies:
-                            if m.theCo == c.id:
-                                toUpdate.workFor=c.id
+                            if m['theCo_id'] == c['id']:
+                                toUpdate.workFor=c['id']
                                 toUpdate.save()
                 company = Company.objects.filter(id=user.workFor)
                 manager = Management.objects.filter(id=user.theData)
@@ -165,7 +165,7 @@ def dashboard(request):
                     'company': company
                 }
                 messages.success(request, f'Welcome {user.firstName}')
-                return render(request, 'hrDash.html', context)
+                return render(request, 'hr/hrDash.html', context)
             company = Company.objects.filter(id=user.workFor)
             manager = Management.objects.filter(id=user.theData)
             context = {
@@ -173,8 +173,8 @@ def dashboard(request):
                 'manager': manager,
                 'company': company
                 }
-
-            return render(request, 'hrDash.html', context)
+            messages.success(request, f'Welcome {user.firstName}')
+            return render(request, 'hr/hrDash.html', context)
         # General Member
         else:
             if user.theData == 0:

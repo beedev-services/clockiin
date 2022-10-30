@@ -42,6 +42,7 @@
                     <th>Code</th>
                     <th>Creator</th>
                     <th>Company</th>
+                    <th>Code Used</th>
                 </tr>
                 {% for code in codes %}
                     <tr>
@@ -62,6 +63,13 @@
                                     Master Code
                                 {% endif %}
                             {% endfor %}
+                        </td>
+                        <td>
+                            {% if code.lastUsed == code.createdAt %}
+                                No
+                            {% else %}
+                                Yes
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
