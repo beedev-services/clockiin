@@ -64,6 +64,7 @@ class User(models.Model):
     loggedOn = models.DateTimeField(auto_now=True)
     workFor = models.IntegerField(default=0)
     theData = models.IntegerField(default=0)
+    genCode = models.BooleanField(default=0)
 
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
@@ -75,7 +76,6 @@ class UserCodes(models.Model):
     lastUsed = models.DateTimeField(auto_now=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, related_name='codeCreator', on_delete=CASCADE)
-
 
 class UserAddress(models.Model):
     address1 = models.CharField(max_length=255)

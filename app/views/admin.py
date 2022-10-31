@@ -73,6 +73,17 @@ def allUsers(request):
         return render(request, 'admin/users.html', context)
 
 def generateCode(request):
+    user = user.objects.get(id=request.session['user_id'])
+    if user.level == 24:
+        N = 12
+        res = ''.join(random.choices(string.ascii_letters, k=N))
+        code = str(res)
+        UserCodes.objects.create(
+            userCode=code,
+            creator=user,
+        )
+        messages.success(request, f'Owner Registration Code {code} Generated')
+        return redirect('/theAdmin/codes/')
     N = 8
     res = ''.join(random.choices(string.ascii_letters, k=N))
     print("The generated random string : " + str(res))
@@ -83,7 +94,4 @@ def generateCode(request):
         creator=user
     )
     messages.success(request, f'{code} Generated')
-    if user.level == 24:
-        return redirect('/theAdmin/codes/')
-    if user.level == 2:
-        return redirect('/company/codes/')
+    return redirect('/company/codes/')

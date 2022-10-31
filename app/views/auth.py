@@ -125,6 +125,7 @@ def dashboard(request):
                         for c in companies:
                             if m['theCo_id'] == c['id']:
                                 toUpdate.workFor=c['id']
+                                toUpdate.genCode=1
                                 toUpdate.save()
                 # Company and manager are filtered to only allow the users company and managers list to show based of user.workFor and user.theData
                 company = Company.objects.get(id=user.workFor)
@@ -206,9 +207,21 @@ def dashboard(request):
 
 
 # ############ Profile Render Functions
+def profile(request):
+    pass
+
+def editProfile(request):
+    pass
 
 # ############ Profile Create Functions
+def createProfile(request):
+    pass
 
 # ############ Profile Update Functions
+def updateProfile(request):
+    pass
+
+def allowGenCode(request):
+    pass
 
 # ############ Profile Delete Functions
