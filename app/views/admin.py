@@ -73,7 +73,10 @@ def allUsers(request):
         return render(request, 'admin/users.html', context)
 
 def generateCode(request):
-    user = user.objects.get(id=request.session['user_id'])
+    if 'user_id' not in request.session:
+        messages.error(request, "Please login")
+        return redirect('/')
+    user = User.objects.get(id=request.session['user_id'])
     if user.level == 24:
         N = 12
         res = ''.join(random.choices(string.ascii_letters, k=N))

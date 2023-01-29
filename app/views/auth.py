@@ -53,6 +53,7 @@ def reg(request):
         email = request.POST['email'],
         password = hashedPw
     )
+    print('the new user:', newUser)
     request.session['user_id'] = newUser.id
     if newUser.id == 1:
         toUpdate = User.objects.get(id=request.session['user_id'])
@@ -67,6 +68,7 @@ def reg(request):
         messages.success(request, "Welcome Admin User")
         return redirect('/dashboard/')
     codes = UserCodes.objects.all().values()
+    print('the codes:', codes)
     for code in codes:
         if request.POST['role'] == 'owner':
             if request.POST['regcode'] == code['userCode']:
@@ -114,35 +116,18 @@ def dashboard(request):
             return render(request, 'admin/adminDash.html', context)
         # Owner == 2
         if user.level == 2:
-            # Checking if owner has a Manager profile attached 0 = No
-            if user.theData == 0:
-                # Looking in the managers list to find a match
-                for m in managers:
-                    if user.email == m['email']:
-                        toUpdate=User.objects.get(id=user.id)
-                        toUpdate.theData=m['id']
-                        # Now looking for a company match based of the manager list
-                        for c in companies:
-                            if m['theCo_id'] == c['id']:
-                                toUpdate.workFor=c['id']
-                                toUpdate.genCode=1
-                                toUpdate.save()
-                # Company and manager are filtered to only allow the users company and managers list to show based of user.workFor and user.theData
-                company = Company.objects.get(id=user.workFor)
-                manager = Management.objects.filter(id=user.theData)
+            # Checking if owner has a Company attached 0 = No
+            print('createdAt', user.createdAt, 'updatedAt', user.updatedAt)
+            if user.workFor == 0:
                 context = {
                     'user': user,
-                    'manager': manager,
-                    'company': company
                 }
                 messages.success(request, f"Welcome Owner {user.firstName}")
                 return render(request, 'owner/ownerDash.html', context)
             # Assumes that the user is a return user and has data attached already
             company = Company.objects.get(id=user.workFor)
-            manager = Management.objects.filter(id=user.theData)
             context = {
                 'user': user,
-                'manager': manager,
                 'company': company
             }
             messages.success(request, f'Welcome {user.firstName}')

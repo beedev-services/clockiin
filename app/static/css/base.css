@@ -80,3 +80,13 @@
   justify-content: center;
   align-items: center;
 }
+table,
+tr,
+th,
+td {
+  border: 2px solid #594545;
+}
+th,
+td {
+  padding: 0.5em;
+}

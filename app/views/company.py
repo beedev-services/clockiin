@@ -222,7 +222,7 @@ def companyCodes(request):
 # Company Create Pages
 
 def createCompany(request):
-    Company.objects.create(
+    co = Company.objects.create(
         name=request.POST['name'],
         address1=request.POST['address1'],
         address2=request.POST['address2'],
@@ -231,6 +231,10 @@ def createCompany(request):
         zipCode=request.POST['zipCode'],
         owner=User.objects.get(id=request.session['user_id']),
     )
+    print('company', co.id)
+    toUpdate=User.objects.get(id=request.session['user_id'])
+    toUpdate.workFor=co.id
+    toUpdate.save()
     messages.success(request, 'Company Created')
     return redirect('/dashboard/')
 
@@ -252,7 +256,7 @@ def createPayRate(request):
     return redirect('/company/payRates/')
 
 def createManager(request):
-    Management.objects.create(
+    m = Management.objects.create(
         firstName=request.POST['firstName'],
         lastName=request.POST['lastName'],
         email=request.POST['email'],
@@ -263,6 +267,14 @@ def createManager(request):
         dept_id=request.POST['dept'],
         theCo_id=request.POST['theCo']
     )
+    user = User.objects.get(id=request.session['user_id'])
+    print('the user', user.email)
+    if m.email == user.email:
+        toUpdate=User.objects.get(id=request.session['user_id'])
+        toUpdate.theData=m.id
+        toUpdate.save()
+        messages.success(request, 'Manager Added')
+        return redirect('/company/managers/')
     messages.success(request, 'Manager Added')
     return redirect('/company/managers/')
 
